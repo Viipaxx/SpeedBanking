@@ -1,9 +1,9 @@
 # SpeedBanking
+Projeto desenvolvido com o intuito de testar a intregração do Python com o MySQL... Funcionando perfeitamente
 
-# Projeto desenvolvido com o intuito de testar a intregração do Python com o MySQL... Funcionando perfeitamente
+##
 
-
-Siga-me
+#Siga-me
 <div>
 <a href="https://instagram.com/viipax.code" target="_blank"><img src="https://img.shields.io/badge/-Instagram-%23E4405F?style=for-the-badge&logo=instagram&logoColor=white" target="_blank"></a>
 <a href="https://www.linkedin.com/in/vitor-paz-5433ab236/" target="_blank"><img src="https://img.shields.io/badge/-LinkedIn-%230077B5?style=for-the-badge&logo=linkedin&logoColor=white" target="_blank"></a> 
