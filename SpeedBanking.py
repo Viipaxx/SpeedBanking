@@ -4,14 +4,17 @@ import mysql.connector
 from mysql.connector import Error
 
 def conectar():
+
     try:
         global con
         con = mysql.connector.connect(host='localhost', database='speedbanking', user='root', password='')
+
     except Error as erro:
         print('Erro ao conectar!')
 
 # Inicio
 def inicio():
+
     system('cls')
     print('-' * 60)
     print(' ' * 17 + '\033[32mBEM VINDO AO SPEED BANKING\033[m')
@@ -32,6 +35,7 @@ def inicio():
 
 # Abrir conta
 def abrir_conta():
+
     try:
         conectar()
         system('cls')
@@ -54,7 +58,7 @@ def abrir_conta():
         cod_trans = input('Digite o seu código de transação: (5 dígitos) ')
         while len(cod_trans) != 5:
             cod_trans = input('5 dígitos: ')
-        cod = 'select * from dados'
+        cod = 'SELECT * FROM dados'
         cursor.execute(cod)
         linhas = cursor.fetchall()
 
@@ -64,11 +68,11 @@ def abrir_conta():
 
 
         print('\033[32mConta criada com sucesso!\033[m')
-        abrir_conta = "insert into dados values (default, '" + nome + "', '" + sobrenome + "', '" + senha + "', '" + cod_trans + "', default);"
+        abrir_conta = "INSERT INTO dados VALUES (default, '" + nome + "', '" + sobrenome + "', '" + senha + "', '" + cod_trans + "', default);"
         cursor.execute(abrir_conta)
         con.commit()
 
-        num_conta = 'select * from dados'
+        num_conta = 'SELECT * FROM dados'
         cursor.execute(num_conta)
         contas = cursor.fetchall()
 
@@ -78,6 +82,7 @@ def abrir_conta():
 
     except Error as e:
         print('Erro!', e)
+
     finally:
         if (con.is_connected()):
             cursor.close()
@@ -87,12 +92,14 @@ def abrir_conta():
 
 # Acessar conta
 def acessar_conta():
+
     try:
         conectar()
         cursor = con.cursor()
 
         login_acesso = int(input('Insira seu número da conta: '))
-        consulta = 'select * from dados'
+
+        consulta = 'SELECT * FROM dados'
         cursor.execute(consulta)
         linhas = cursor.fetchall()
 
@@ -111,8 +118,13 @@ def acessar_conta():
                         inicio()
                     else:
                         conta_acessada(login_acesso)
+            else:
+                print('Número incorreto!')
+                acessar_conta()
+
     except Error as e:
         print('Erro!', e)
+
     finally:
         if (con.is_connected()):
             cursor.close()
@@ -120,12 +132,13 @@ def acessar_conta():
 
 # Dentro da conta
 def conta_acessada(id):
+
     try:
         conectar()
         system('cls')
         num_conta = str(id)
         cursor = con.cursor()
-        conta = 'select * from dados where num_conta = ' + num_conta
+        conta = 'SELECT * FROM dados WHERE num_conta = ' + num_conta
         cursor.execute(conta)
         linhas = cursor.fetchone()
         print('-' * 50)
@@ -154,8 +167,10 @@ def conta_acessada(id):
             voltar()
         else:
             conta_acessada()
+
     except Error as e:
         print('Erro!', e)
+
     finally:
         if(con.is_connected()):
             cursor.close()
@@ -163,12 +178,13 @@ def conta_acessada(id):
 
 # Sacar
 def sacar(id):
+
     try:
         conectar()
         system('cls')
         cursor = con.cursor()
         num_conta = str(id)
-        saldo = 'select * from dados where num_conta = ' + num_conta
+        saldo = 'SELECT * FROM dados WHERE num_conta = ' + num_conta
         cursor.execute(saldo)
         linhas = cursor.fetchone()
 
@@ -185,7 +201,7 @@ def sacar(id):
             saldo_atual = saldo_atual - sacar
             print(f'Você ficou com um saldo de R$ {saldo_atual}')
 
-            atualizacao = f'update dados set saldo = {saldo_atual} where num_conta = {num_conta}'
+            atualizacao = f'UPDATE dados SET saldo = {saldo_atual} WHERE num_conta = {num_conta}'
             cursor.execute(atualizacao)
             con.commit()
 
@@ -202,12 +218,13 @@ def sacar(id):
 
 # Depositar
 def depositar(id):
+
     try:
         conectar()
         system('cls')
         cursor = con.cursor()
         num_conta = str(id)
-        consulta = f'select * from dados where num_conta = {num_conta}'
+        consulta = f'SELECT * FROM dados WHERE num_conta = {num_conta}'
         cursor.execute(consulta)
         linhas = cursor.fetchone()
 
@@ -218,15 +235,17 @@ def depositar(id):
 
         saldo = float(linhas[5])
         saldo_atual = saldo + deposito
-        atualizacao = f'update dados set saldo = {saldo_atual} where num_conta = {num_conta}'
+        atualizacao = f'UPDATE dados SET saldo = {saldo_atual} WHERE num_conta = {num_conta}'
         cursor.execute(atualizacao)
         print(f'\nVocê acabou de fazer um depósito de R$ {deposito} \nSeu saldo atual é de R$ {saldo_atual}')
         con.commit()
 
         input("Aperte 'Enter' para prosseguir!")
         conta_acessada(id)
+
     except Error as e:
         print('Erro ao depositar!', e)
+
     finally:
         if (con.is_connected()):
             cursor.close()
@@ -234,6 +253,7 @@ def depositar(id):
 
 # Empréstimo
 def emprestimo(id):
+
     print('Opção disponível em breve!')
     input('Aperte "Enter" para voltar!')
     system('cls')
@@ -241,25 +261,26 @@ def emprestimo(id):
 
 # Transferência
 def transferencia(id):
+
     try:
         conectar()
         system('cls')
         cursor = con.cursor()
         num_conta = str(id)
-        consulta = f'select * from dados where num_conta = {num_conta}'
+        consulta = f'SELECT * FROM dados WHERE num_conta = {num_conta}'
         cursor.execute(consulta)
         linhas = cursor.fetchone()
         print(f'O seu saldo atual é de R$ {linhas[5]}')
         trans = str(input('Digite o código de transferência do usuário: '))
         while trans == linhas[5]:
             trans = str(input('Você não pode transferir para você mesmo! Digite outro código: '))
-        consulta = f'select * from dados where cod_trans = {trans}'
+        consulta = f'SELECT * FROM dados WHERE cod_trans = {trans}'
         system('cls')
         cursor.execute(consulta)
         linhas = cursor.fetchone()
         print(f'Tranferência para Sr(a).{linhas[1]}')
         transacao = float(input('Digite o valor que deseja transferir: R$ '))
-        consulta_saldo = f'select * from dados where num_conta = {num_conta}'
+        consulta_saldo = f'SELECT * FROM dados WHERE num_conta = {num_conta}'
         cursor.execute(consulta_saldo)
         conta = cursor.fetchone()
         if conta[5] >= transacao:
@@ -267,13 +288,12 @@ def transferencia(id):
             novo_saldo = transacao + saldo
             saldo_atual = float(conta[5]) - transacao
             print(f'Transferência realizada com sucesso! \nSeu saldo atual é de R$ {saldo_atual}')
-            atualizacao1 = f'update dados set saldo = {novo_saldo} where cod_trans = {trans}'
+            atualizacao1 = f'UPDATE dados SET saldo = {novo_saldo} WHERE cod_trans = {trans}'
             cursor.execute(atualizacao1)
             con.commit()
-            atualizacao2 = f'update dados set saldo = {saldo_atual} where num_conta = {num_conta}'
+            atualizacao2 = f'UPDATE dados SET saldo = {saldo_atual} WHERE num_conta = {num_conta}'
             cursor.execute(atualizacao2)
             con.commit()
-            
 
         else:
             print('Erro! Saldo insuficiente!')
@@ -282,6 +302,7 @@ def transferencia(id):
 
     except Error as e:
         print('Erro ao transferir!', e)
+
     finally:
         if (con.is_connected()):
             cursor.close()
@@ -291,12 +312,13 @@ def transferencia(id):
 
 # Fechar conta
 def fechar_conta(id):
+
     try:
         conectar()
         system('cls')
         cursor = con.cursor()
         num_conta = str(id)
-        consulta = f'select * from dados where num_conta = {num_conta}'
+        consulta = f'SELECT * FROM dados WHERE num_conta = {num_conta}'
         cursor.execute(consulta)
         linha = cursor.fetchone()
         saldo = float(linha[5])
@@ -309,7 +331,7 @@ def fechar_conta(id):
             input("Aperte 'Enter' para prosseguir!")
             conta_acessada(id)
         else:
-            deletar_conta = f'delete from dados where num_conta = {num_conta}'
+            deletar_conta = f'DELETE FROM dados WHERE num_conta = {num_conta}'
             cursor.execute(deletar_conta)
             con.commit()
             print('Conta fechada com sucesso!')
@@ -318,6 +340,7 @@ def fechar_conta(id):
 
     except Error as e:
         print('Erro ao fechar a conta!', e)
+
     finally:
         if (con.is_connected()):
             cursor.close()
@@ -325,6 +348,7 @@ def fechar_conta(id):
 
 # Voltar
 def voltar():
+
     for c in range(0, 1, 1):
         print('\033[36mSaindo!\033[m')
         sleep(1)
@@ -340,6 +364,7 @@ def voltar():
 
 # Sem Opção
 def sem_opcao():
+
     print('Não temos essa opção! Tente novamente!')
     input('Aperte "Enter" para sair!')
     system('cls')
@@ -347,6 +372,7 @@ def sem_opcao():
 
 # Sair do Banco
 def sair_banco():
+
         for c in range(0, 1, 1):
             print('\033[36mSaindo!\033[m')
             sleep(1)
