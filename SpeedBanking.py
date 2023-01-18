@@ -68,7 +68,7 @@ def abrir_conta():
 
 
         print('\033[32mConta criada com sucesso!\033[m')
-        abrir_conta = "INSERT INTO dados VALUES (default, '" + nome + "', '" + sobrenome + "', '" + senha + "', '" + cod_trans + "', default);"
+        abrir_conta = "INSERT INTO dados VALUES (default, '" + nome + "', '" + sobrenome + "', '" + senha + "', '" + cod_trans + "', default, default, default);"
         cursor.execute(abrir_conta)
         con.commit()
 
@@ -118,9 +118,9 @@ def acessar_conta():
                         inicio()
                     else:
                         conta_acessada(login_acesso)
-            else:
-                print('Número incorreto!')
-                acessar_conta()
+
+        print('Número incorreto!')
+        acessar_conta()
 
     except Error as e:
         print('Erro!', e)
@@ -267,16 +267,26 @@ def transferencia(id):
         system('cls')
         cursor = con.cursor()
         num_conta = str(id)
+
         consulta = f'SELECT * FROM dados WHERE num_conta = {num_conta}'
+        
         cursor.execute(consulta)
+        
         linhas = cursor.fetchone()
+        
         print(f'O seu saldo atual é de R$ {linhas[5]}')
+
         trans = str(input('Digite o código de transferência do usuário: '))
-        while trans == linhas[5]:
+        
+        while trans == linhas[4]:
+        
             trans = str(input('Você não pode transferir para você mesmo! Digite outro código: '))
+
         consulta = f'SELECT * FROM dados WHERE cod_trans = {trans}'
+        
         system('cls')
         cursor.execute(consulta)
+
         linhas = cursor.fetchone()
         print(f'Tranferência para Sr(a).{linhas[1]}')
         transacao = float(input('Digite o valor que deseja transferir: R$ '))
